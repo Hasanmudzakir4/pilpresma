@@ -1,0 +1,63 @@
+.btn-color {
+  background-color: #0e1c36;
+  color: #fff;
+}
+
+.profile-image-pic {
+  height: 150px;
+  width: 150px;
+  object-fit: cover;
+  background-color: transparent;
+}
+
+.cardbody-color {
+  background-color: #ebf2fa;
+}
+
+a {
+  text-decoration: none;
+}
+
+.toggle-password {
+  cursor: pointer;
+  font-size: 1.2rem;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.position-absolute {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+/* Responsif untuk ukuran layar tablet dan mobile */
+@media (max-width: 767px) {
+  .profile-image-pic {
+    height: 120px;
+    width: 120px;
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .btn-color {
+    font-size: 1rem;
+  }
+}
+
+/* Responsif untuk ukuran layar laptop */
+@media (max-width: 991px) {
+  .profile-image-pic {
+    height: 150px;
+    width: 150px;
+  }
+
+  .btn-color {
+    font-size: 1.1rem;
+  }
+}

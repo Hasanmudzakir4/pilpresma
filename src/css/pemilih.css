@@ -1,0 +1,82 @@
+body {
+  color: #333;
+  font-family: "Arial", sans-serif;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+  display: block;
+  margin: 0 auto 20px;
+}
+
+.card {
+  border: 3px solid #2575fc;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  color: #333;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  background: #f8f9fa;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  margin-top: 10px;
+}
+
+.card-body {
+  flex: 1;
+}
+
+.vote-btn {
+  width: 100%;
+  padding: 8px;
+  font-size: 1rem;
+  background: #2575fc;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  transition: background 0.3s ease;
+}
+
+.vote-btn:hover {
+  background: #6a11cb;
+}
+
+.col-12.col-md-6.col-lg-3 {
+  margin-bottom: 20px;
+}
+
+footer {
+  background-color: #f1f1f1;
+  padding: 20px 0;
+  text-align: center;
+  margin-top: 40px;
+}
+
+footer p {
+  margin: 0;
+  color: #333;
+}
+
+footer .footer-logo {
+  width: 55px;
+  height: auto;
+  margin-bottom: 10px;
+}
