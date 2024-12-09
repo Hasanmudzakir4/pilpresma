@@ -7,67 +7,32 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-require "../../../config/config.php";
 require "../../../config/functions.php";
 
-// Ambil data pemilih berdasarkan id_paslon
-$sql = "SELECT p.id_paslon, pas.nama_paslon, 
-            COUNT(*) AS jumlah_suara
-        FROM 
-            pemilihan p 
-        JOIN 
-            paslon pas 
-        ON 
-            p.id_paslon = pas.id_paslon
-        GROUP BY 
-            p.id_paslon, pas.nama_paslon
-        ";
+// Data suara berdasarkan paslon
+$suaraPaslon = getSuaraPaslon();
+$labels = $suaraPaslon['labels'];
+$data = $suaraPaslon['data'];
 
-$labels = [];
-$data = [];
-$result = $conn->query($sql);
+// Menghitung total suara
+$totalSuara = getTotalSuara();
 
-if (!$result) {
-    die("Query Error: " . $conn->error);
-}
+// Jumlah paslon
+$totalPaslon = getTotalPaslon();
 
-while ($row = $result->fetch_assoc()) {
-    $labels[] = $row['nama_paslon'];
-    $data[] = $row['jumlah_suara'];
-}
+// Jumlah admin
+$totalAdmin = getTotalAdmin();
 
-// Ambil jumlah paslon / kandidat
-$sqlPaslon = "SELECT COUNT(*) AS total_paslon FROM paslon";
-$resultPaslon = $conn->query($sqlPaslon);
-
-// Periksa apakah query berhasil
-if (!$resultPaslon) {
-    die("Query Error: " . $conn->error);
-}
-
-// Ambil data jumlah paslon
-$rowPaslon = $resultPaslon->fetch_assoc();
-$totalPaslon = $rowPaslon['total_paslon'];
-
-$sqlAdmin = "SELECT COUNT(*) AS total_admin FROM users WHERE role = 'admin'";
-
-// Eksekusi query
-$resultAdmin = $conn->query($sqlAdmin);
-
-// Periksa apakah query berhasil
-if (!$resultAdmin) {
-    die("Query Error: " . $conn->error);
-}
-
-// Ambil data jumlah admin
-$rowAdmin = $resultAdmin->fetch_assoc();
-$totalAdmin = $rowAdmin['total_admin'];
-
-
+// Data mahasiswa
 $mahasiswaData = getMahasiswa();
 $totalMahasiswa = $mahasiswaData['total'];
 
+// Menghitung total mahasiswa yang sudah dan belum memilih
+$mahasiswaStatus = getStatusPemilihan(null);
+$totalSudahMemilih = count($mahasiswaStatus['sudahMemilih']);
+$totalBelumMemilih = count($mahasiswaStatus['belumMemilih']);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -122,7 +87,7 @@ $totalMahasiswa = $mahasiswaData['total'];
                         <!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item"><a href="./dashboard.php">Home</a></li>
                                 <li class="breadcrumb-item active">Dashboard</li>
                             </ol>
                         </div>
@@ -141,7 +106,7 @@ $totalMahasiswa = $mahasiswaData['total'];
                     <div class="row">
                         <div class="col-lg-3 col-6">
                             <!-- small box -->
-                            <div class="small-box bg-info">
+                            <div class="small-box bg-gray">
                                 <div class="inner">
                                     <h3><?= $totalMahasiswa; ?></h3>
                                     <p>Mahasiswa</p>
@@ -183,52 +148,68 @@ $totalMahasiswa = $mahasiswaData['total'];
                         <!-- ./col -->
                         <div class="col-lg-3 col-6">
                             <!-- small box -->
-                            <div class="small-box bg-danger">
+                            <div class="small-box bg-primary">
                                 <div class="inner">
-                                    <h3>65</h3>
-                                    <p>Unique Visitors</p>
+                                    <h3><?= $totalSudahMemilih; ?></h3>
+                                    <p>Sudah Memilih</p>
                                 </div>
                                 <div class="icon">
-                                    <i class="ion ion-pie-graph"></i>
+                                    <i class="fa-solid fa-user-check"></i>
                                 </div>
-                                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="./sudahMemilih.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
-                        <!-- ./col -->
-                        <!-- PIE CHART -->
-                        <div class="card card-indigo">
-                            <div class="card-header">
-                                <h3 class="card-title">
-                                    <i class="far fa-chart-bar"></i>
-                                    Hasil Pemungutan Suara
-                                </h3>
-                            </div>
-                            <div class="card-body">
-
-                                <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
-                                <div class="mt-3 text-center">
-                                    <?php
-                                    $output = "";
-                                    foreach ($labels as $index => $label) {
-                                        $output .= "<span class='mx-3'><strong>$label</strong> : " . $data[$index] . " suara</span>";
-                                    }
-                                    // Menghapus tanda '|' terakhir
-                                    $output = rtrim($output, " | ");
-                                    echo $output;
-                                    ?>
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3><?= $totalBelumMemilih; ?></h3>
+                                    <p>Belum Memilih</p>
                                 </div>
+                                <div class="icon">
+                                    <i class="fa-solid fa-user-xmark"></i>
+                                </div>
+                                <a href="./belumMemilih.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                            <!-- ./col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
 
+                    <!-- PIE CHART -->
+                    <div class="row">
+                        <!-- PIE CHART -->
+                        <div class="col-lg-6"> <!-- Tambahkan ini untuk setengah layar -->
+                            <div class="card card-indigo">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="far fa-chart-bar"></i>
+                                        Hasil Pemungutan Suara
+                                    </h3>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                    <div class="mt-3 text-center">
+                                        <?php
+                                        $output = "";
+                                        foreach ($labels as $index => $label) {
+                                            $output .= "<span class='mx-3'><strong>$label</strong> : " . $data[$index] . " suara</span>";
+                                        }
+                                        echo $output;
+                                        ?>
+                                        <p class="mt-3"><strong>Total Suara:</strong> <?= $totalSuara; ?></p>
+                                    </div>
+                                </div>
                                 <!-- /.card-body -->
                             </div>
                         </div>
-                        <!-- /.row -->
-
-                        <!-- /.card -->
-
+                        <!-- /.col -->
                     </div>
+
                     <!-- /.container-fluid -->
+                </div>
+                <!-- /.content -->
             </section>
-            <!-- /.content -->
         </div>
         <?php
         require "./footer.php";

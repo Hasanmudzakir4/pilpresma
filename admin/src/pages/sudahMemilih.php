@@ -9,7 +9,6 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
 
 require "../../../config/functions.php";
 
-
 ?>
 
 <!DOCTYPE html>
@@ -79,13 +78,13 @@ require "../../../config/functions.php";
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1 class="m-0">Data Mahasiswa</h1>
+                                <h1 class="m-0">Bilik Suara</h1>
                             </div>
                             <!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
                                     <li class="breadcrumb-item"><a href="./dashboard.php">Home</a></li>
-                                    <li class="breadcrumb-item active">Semester 3</li>
+                                    <li class="breadcrumb-item active">Sudah Memilih</li>
                                 </ol>
                             </div>
                             <!-- /.col -->
@@ -99,7 +98,7 @@ require "../../../config/functions.php";
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Semester 3</h3>
+                                    <h3 class="card-title">Sudah Memilih</h3>
 
                                     <div class="card-tools">
                                         <div class="input-group input-group-sm" style="width: 150px;">
@@ -120,31 +119,27 @@ require "../../../config/functions.php";
                                             <tr>
                                                 <th>No</th>
                                                 <th>NIM</th>
-                                                <th>Username</th>
                                                 <th>Nama Lengkap</th>
                                                 <th>Semester</th>
                                                 <th>Kelas</th>
-                                                <th>Action</th>
+                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <?php
-                                        $mahasiswaList = getMahasiswa(3);
 
                                         $no = 1;
-                                        foreach ($mahasiswaList['data'] as $mahasiswa):
+                                        $mahasiswaStatus = getStatusPemilihan(null);
+                                        $sudahMemilih = $mahasiswaStatus['sudahMemilih'];
+                                        foreach ($sudahMemilih as $mahasiswa) :
                                         ?>
                                             <tbody>
                                                 <tr>
                                                     <td><?= $no; ?></td>
                                                     <td><?= $mahasiswa['nim']; ?></td>
-                                                    <td><?= $mahasiswa['username']; ?></td>
                                                     <td><?= $mahasiswa['nama_lengkap']; ?></td>
                                                     <td><?= $mahasiswa['semester']; ?></td>
                                                     <td><?= $mahasiswa['kelas']; ?></td>
-                                                    <td>
-                                                        <a href="#" class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-pen-to-square"></i> Update</a>
-                                                        <a href="#" class="btn btn-outline-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')"><i class="fa-solid fa-trash-can"></i> Delete</a>
-                                                    </td>
+                                                    <td>✅</td>
                                                 </tr>
                                             </tbody>
                                         <?php

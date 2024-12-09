@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-require "./config/config.php";
 require "./config/functions.php";
 
 

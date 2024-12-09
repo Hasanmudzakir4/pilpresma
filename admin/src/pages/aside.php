@@ -20,6 +20,27 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                     <p>Dashboard</p>
                 </a>
             </li>
+            <!-- Bilik Suara Menu -->
+            <li class="nav-item <?php echo (in_array($currentPage, ['sudahMemilih.php', 'belumMemilih.php'])) ? 'menu-open' : ''; ?>">
+                <a href="#" class="nav-link <?php echo (in_array($currentPage, ['sudahMemilih.php', 'belumMemilih.php'])) ? 'active' : ''; ?>">
+                    <i class="nav-icon fa-solid fa-user-check"></i>
+                    <p>Bilik Suara<i class="fas fa-angle-left right"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <a href="./sudahMemilih.php" class="nav-link <?php echo ($currentPage == 'sudahMemilih.php') ? 'active' : ''; ?>">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Sudah Memilih</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="./belumMemilih.php" class="nav-link <?php echo ($currentPage == 'belumMemilih.php') ? 'active' : ''; ?>">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Belum Memilih</p>
+                        </a>
+                    </li>
+                </ul>
+            </li>
             <!-- Mahasiswa Menu -->
             <li class="nav-item <?php echo (in_array($currentPage, ['semester1.php', 'semester3.php', 'semester5.php', 'semester7.php'])) ? 'menu-open' : ''; ?>">
                 <a href="#" class="nav-link <?php echo (in_array($currentPage, ['semester1.php', 'semester3.php', 'semester5.php', 'semester7.php'])) ? 'active' : ''; ?>">
@@ -92,13 +113,6 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                         </a>
                     </li>
                 </ul>
-            </li>
-            <!-- Logout Menu -->
-            <li class="nav-item">
-                <a href="./logout.php" class="nav-link <?php echo ($currentPage == 'logout.php') ? 'active' : ''; ?>">
-                    <i class="nav-icon fa-solid fa-right-to-bracket"></i>
-                    <p>Logout</p>
-                </a>
             </li>
         </ul>
     </nav>

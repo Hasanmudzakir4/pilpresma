@@ -7,26 +7,17 @@ if (!isset($_SESSION['username'])) {
   exit;
 }
 
-require '../config/config.php';
 require '../config/functions.php';
 
 // Ambil semester dari data user
 $username = $_SESSION['username'];
-$querySemester = "SELECT semester FROM mahasiswa WHERE username = '$username'";
-$resultSemester = mysqli_query($conn, $querySemester);
-$semester = '';
-
-if ($resultSemester && mysqli_num_rows($resultSemester) > 0) {
-  $row = mysqli_fetch_assoc($resultSemester);
-  $semester = $row['semester'];
-}
+$semester = getSemesterMahasiswa($username);
 
 if (isset($_POST['vote'])) {
   $id_paslon = $_POST['id_paslon'];
 
   // Simpan data ke tabel pemilihan
-  $queryInsert = "INSERT INTO pemilihan VALUES ('', '$username', '$id_paslon', '$semester', NOW())";
-  if (mysqli_query($conn, $queryInsert)) {
+  if (saveVote($username, $id_paslon, $semester)) {
     session_unset();
     session_destroy();
     $message = 'Terima kasih telah memilih!';

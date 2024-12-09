@@ -7,7 +7,6 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-require "../../../config/config.php";
 require "../../../config/functions.php";
 
 
@@ -82,8 +81,8 @@ if (isset($_POST["addKandidat"])) {
                             <!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item"><a href="#">Kandidat</a></li>
-                                    <li class="breadcrumb-item active">Dashboard</li>
+                                    <li class="breadcrumb-item"><a href="./dashboard.php">Home</a></li>
+                                    <li class="breadcrumb-item active">Kandidat</li>
                                 </ol>
                             </div>
                             <!-- /.col -->
@@ -102,23 +101,23 @@ if (isset($_POST["addKandidat"])) {
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="namaKandidat">Nama Lengkap</label>
-                                    <input type="text" class="form-control" id="namaKandidat" name="namaKandidat" placeholder="Nama Lengkap" autocomplete="off">
+                                    <input type="text" class="form-control" id="namaKandidat" name="namaKandidat" placeholder="Nama Lengkap" autocomplete="off" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="visi">Visi</label>
                                     <!-- <input type="text" class="form-control" id="visi" name="visi" placeholder="Visi" autocomplete="off"> -->
-                                    <textarea class="form-control" rows="2" placeholder="Enter visi..." id="visi" name="visi" autocomplete="off"></textarea>
+                                    <textarea class="form-control" rows="2" placeholder="Enter visi..." id="visi" name="visi" autocomplete="off" required></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="misi">Misi</label>
                                     <!-- <input type="text" class="form-control" id="misi" name="misi" placeholder="Misi" autocomplete="off"> -->
-                                    <textarea class="form-control" rows="3" placeholder="Enter misi..." id="misi" name="misi" autocomplete="off"></textarea>
+                                    <textarea class="form-control" rows="3" placeholder="Enter misi..." id="misi" name="misi" autocomplete="off" required></textarea>
                                 </div>
                                 <div class="form-group">
                                     <label for="foto">Foto</label>
                                     <div class="input-group">
                                         <div class="custom-file">
-                                            <input type="file" class="custom-file-input" name="foto" id="foto" onchange="previewImage()">
+                                            <input type="file" class="custom-file-input" name="foto" id="foto" onchange="previewImage()" required>
                                             <label class="custom-file-label" for="foto">Choose file</label>
                                         </div>
                                         <div class="input-group-append">

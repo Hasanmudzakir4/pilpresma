@@ -7,7 +7,6 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     exit;
 }
 
-require "../../../config/config.php";
 require "../../../config/functions.php";
 
 
@@ -112,8 +111,8 @@ if (isset($_POST["registerUser"])) {
                         <!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="#">Users</a></li>
-                                <li class="breadcrumb-item active">Dashboard</li>
+                                <li class="breadcrumb-item"><a href="./dashboard.php">Home</a></li>
+                                <li class="breadcrumb-item active">Users</li>
                             </ol>
                         </div>
                         <!-- /.col -->
@@ -150,19 +149,19 @@ if (isset($_POST["registerUser"])) {
                             <div class="form-group row">
                                 <label for="usernameAdmin" class="col-sm-2 col-form-label">Username</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="usernameAdmin" id="usernameAdmin" placeholder="Username">
+                                    <input type="text" class="form-control" name="usernameAdmin" id="usernameAdmin" placeholder="Username" required>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="passwordAdmin" class="col-sm-2 col-form-label">Password</label>
                                 <div class="col-sm-10">
-                                    <input type="password" class="form-control" name="passwordAdmin" id="passwordAdmin" placeholder="Password">
+                                    <input type="password" class="form-control" name="passwordAdmin" id="passwordAdmin" placeholder="Password" required>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="confirmPasswordAdmin" class="col-sm-2 col-form-label">Confirm Password</label>
                                 <div class="col-sm-10">
-                                    <input type="password" class="form-control" name="confirmPasswordAdmin" id="confirmPasswordAdmin" placeholder="Confirm Password">
+                                    <input type="password" class="form-control" name="confirmPasswordAdmin" id="confirmPasswordAdmin" placeholder="Confirm Password" required>
                                 </div>
                             </div>
                         </div>
@@ -183,18 +182,18 @@ if (isset($_POST["registerUser"])) {
                         <div class="card-body">
                             <div class="form-group">
                                 <label for="namaLengkapUser">Nama Lengkap</label>
-                                <input type="text" class="form-control" id="namaLengkapUser" name="namaLengkapUser" placeholder="Nama Lengkap" autocomplete="off">
+                                <input type="text" class="form-control" id="namaLengkapUser" name="namaLengkapUser" placeholder="Nama Lengkap" autocomplete="off" required>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="usernameUser">Username</label>
-                                        <input type="text" name="usernameUser" id="usernameUser" class="form-control" placeholder="Username" autocomplete="off">
+                                        <input type="text" name="usernameUser" id="usernameUser" class="form-control" placeholder="Username" autocomplete="off" required>
                                     </div>
                                     <!-- /.form-group -->
                                     <div class="form-group">
                                         <label>Semester</label>
-                                        <select class="form-control select2" style="width: 100%;" name="semester">
+                                        <select class="form-control select2" style="width: 100%;" name="semester" required>
                                             <option value="1">1</option>
                                             <option value="3">3</option>
                                             <option value="5">5</option>
@@ -208,12 +207,12 @@ if (isset($_POST["registerUser"])) {
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="nim">NIM</label>
-                                        <input type="text" name="nim" id="nim" class="form-control" placeholder="NIM" autocomplete="off">
+                                        <input type="text" name="nim" id="nim" class="form-control" placeholder="NIM" autocomplete="off" required>
                                     </div>
                                     <!-- /.form-group -->
                                     <div class="form-group">
                                         <label>Kelas</label>
-                                        <select class="form-control select2" style="width: 100%;" name="kelas">
+                                        <select class="form-control select2" style="width: 100%;" name="kelas" required>
                                             <option value="Pusat/ Teknologi">Pusat/ Teknologi</option>
                                             <option value="Laborti">Laborti</option>
                                             <option value="Tasik">Tasik</option>
@@ -228,7 +227,7 @@ if (isset($_POST["registerUser"])) {
                                 <div class="col-12 col-sm-6">
                                     <div class="form-group">
                                         <label for="passwordUser">Password</label>
-                                        <input type="password" name="passwordUser" id="passwordUser" class="form-control" placeholder="Password" autocomplete="off">
+                                        <input type="password" name="passwordUser" id="passwordUser" class="form-control" placeholder="Password" autocomplete="off" required>
                                     </div>
                                     <!-- /.form-group -->
                                 </div>
@@ -236,7 +235,7 @@ if (isset($_POST["registerUser"])) {
                                 <div class="col-12 col-sm-6">
                                     <div class="form-group">
                                         <label for="confirmPasswordUser">Confirm Password</label>
-                                        <input type="password" name="confirmPasswordUser" id="confirmPasswordUser" class="form-control" placeholder="Confirm Password" autocomplete="off">
+                                        <input type="password" name="confirmPasswordUser" id="confirmPasswordUser" class="form-control" placeholder="Confirm Password" autocomplete="off" required>
                                     </div>
                                 </div>
                                 <!-- /.form-group -->

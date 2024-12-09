@@ -1,9 +1,9 @@
 <!-- /.content-wrapper -->
 <footer class="main-footer">
-    <strong>Copyright &copy; 2014-2021
-        <a href="https://adminlte.io">AdminLTE.io</a>.</strong>
-    All rights reserved.
-    <div class="float-right d-none d-sm-inline-block">
-        <b>Version</b> 3.2.0
+    <!-- To the right -->
+    <div class="float-right d-none d-sm-block">
+        <b><a href="https://sttisonysugema.ac.id/" target="_blank">PPUM - STTI Sony Sugema</a></b> | <b>Version</b> 1.0.0
     </div>
+    <!-- Default to the left -->
+    <strong>2024 <a href="https://adminlte.io" target="_blank">AdminLTE.io</a> & <a href="#">SENAT</a>.</strong> All rights reserved.
 </footer>

@@ -1,5 +1,7 @@
 <?php
+require_once 'config.php';
 
+// Mengambil nama Admin
 function getAdminUsername()
 {
     global $conn;
@@ -30,6 +32,7 @@ function getAdminUsername()
     return "Admin";
 }
 
+// Register untuk Admin
 function registerAdmin($data)
 {
     global $conn;
@@ -70,6 +73,7 @@ function registerAdmin($data)
     }
 }
 
+// Register untuk Mahasiswa
 function registerMahasiswa($data)
 {
     global $conn;
@@ -129,7 +133,7 @@ function registerMahasiswa($data)
     }
 }
 
-
+// Login
 function login($username, $password)
 {
     global $conn;
@@ -168,8 +172,7 @@ function login($username, $password)
     echo "<body onload='error()'><input type='hidden' id='msg' value='" . $message . "''></input></body>";
 }
 
-
-
+// Upload Foto Kandidat
 function uploadFoto()
 {
     $namaFile = $_FILES['foto']['name'];
@@ -226,7 +229,7 @@ function uploadFoto()
     return $namaFileBaru;
 }
 
-
+// Menambahkan Data Kandidat dan Foto
 function tambahKandidat($data)
 {
     global $conn;
@@ -255,6 +258,7 @@ function tambahKandidat($data)
     }
 }
 
+// Ambil data kandidat
 function getKandidat()
 {
     global $conn;
@@ -274,20 +278,32 @@ function getKandidat()
     return $kandidat;
 }
 
+// Ambil data Mahasiswa
 function getMahasiswa($semester = null)
 {
     global $conn;
 
-    $query = "SELECT * FROM mahasiswa";
+    $query = "SELECT * FROM mahasiswa ";
+
     if ($semester !== null) {
         $query .= " WHERE semester = '$semester'";
     }
+
+    $query .= " ORDER BY 
+                    CASE 
+                WHEN kelas = 'Pusat/ Teknologi' THEN 1
+                WHEN kelas = 'Laborti' THEN 2
+                WHEN kelas = 'Tasik' THEN 3
+                ELSE 4
+                    END,
+                nama_lengkap ASC";
 
     $result = mysqli_query($conn, $query);
 
     if (!$result) {
         die("Error: " . mysqli_error($conn));
     }
+
 
     $mahasiswa = [];
     while ($row = mysqli_fetch_assoc($result)) {
@@ -298,4 +314,142 @@ function getMahasiswa($semester = null)
     $totalMahasiswa = count($mahasiswa);
 
     return ['data' => $mahasiswa, 'total' => $totalMahasiswa];
+}
+
+// Ambil data yang sudah memilih dan belum memilih
+function getStatusPemilihan($semester = null)
+{
+    global $conn;
+
+    // Query untuk mendapatkan data mahasiswa beserta status pemilihannya
+    $query = "SELECT m.nim, m.nama_lengkap, m.kelas, m.semester, 
+                     IF(p.username IS NULL, 'Belum Memilih', 'Sudah Memilih') AS status
+              FROM mahasiswa m
+              LEFT JOIN pemilihan p ON m.username = p.username";
+
+    // Tambahkan kondisi semester jika ada
+    if ($semester !== null) {
+        $query .= " WHERE m.semester = '$semester'";
+    }
+
+    // Tambahkan pengurutan berdasarkan semester dan nama
+    $query .= " ORDER BY 
+                    CASE 
+                WHEN m.kelas = 'Pusat/ Teknologi' THEN 1
+                WHEN m.kelas = 'Laborti' THEN 2
+                WHEN m.kelas = 'Tasik' THEN 3
+                    ELSE 4
+                END,
+                    FIELD(m.semester, 1, 3, 5, 7), m.nama_lengkap ASC";
+
+    $result = mysqli_query($conn, $query);
+
+    if (!$result) {
+        die("Error: " . mysqli_error($conn));
+    }
+
+    $sudahMemilih = [];
+    $belumMemilih = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        if ($row['status'] === 'Sudah Memilih') {
+            $sudahMemilih[] = $row;
+        } else {
+            $belumMemilih[] = $row;
+        }
+    }
+
+    // Mengembalikan array yang berisi data sudah memilih dan belum memilih
+    return [
+        'sudahMemilih' => $sudahMemilih,
+        'belumMemilih' => $belumMemilih
+    ];
+}
+
+// Ambil data suara berdasarkan paslon
+function getSuaraPaslon()
+{
+    global $conn;
+
+    $sql = "SELECT p.id_paslon, pas.nama_paslon, COUNT(*) AS jumlah_suara
+            FROM pemilihan p
+            JOIN paslon pas ON p.id_paslon = pas.id_paslon
+            GROUP BY p.id_paslon, pas.nama_paslon";
+
+    $result = $conn->query($sql);
+
+    if (!$result) {
+        die("Query Error: " . $conn->error);
+    }
+
+    $labels = [];
+    $data = [];
+    while ($row = $result->fetch_assoc()) {
+        $labels[] = $row['nama_paslon'];
+        $data[] = $row['jumlah_suara'];
+    }
+
+    return ['labels' => $labels, 'data' => $data];
+}
+
+// Ambil total suara
+function getTotalSuara()
+{
+    $suaraPaslon = getSuaraPaslon();
+    return array_sum($suaraPaslon['data']);
+}
+
+// Ambil jumlah paslon
+function getTotalPaslon()
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total_paslon FROM paslon";
+    $result = $conn->query($sql);
+
+    if (!$result) {
+        die("Query Error: " . $conn->error);
+    }
+
+    $row = $result->fetch_assoc();
+    return $row['total_paslon'];
+}
+
+// Ambil total admin
+function getTotalAdmin()
+{
+    global $conn;
+
+    $sql = "SELECT COUNT(*) AS total_admin FROM users WHERE role = 'admin'";
+    $result = $conn->query($sql);
+
+    if (!$result) {
+        die("Query Error: " . $conn->error);
+    }
+
+    $row = $result->fetch_assoc();
+    return $row['total_admin'];
+}
+
+// Fungsi untuk mendapatkan semester mahasiswa berdasarkan username
+function getSemesterMahasiswa($username)
+{
+    global $conn;
+    $query = "SELECT semester FROM mahasiswa WHERE username = '$username'";
+    $result = mysqli_query($conn, $query);
+
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        return $row['semester'];
+    }
+
+    return null;
+}
+
+// Fungsi untuk menyimpan data pemilihan ke database
+function saveVote($username, $id_paslon, $semester)
+{
+    global $conn;
+    $queryInsert = "INSERT INTO pemilihan VALUES ('', '$username', '$id_paslon', '$semester', NOW())";
+    return mysqli_query($conn, $queryInsert);
 }
