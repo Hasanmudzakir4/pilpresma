@@ -1,5 +1,5 @@
 <?php
-$host = "34.128.64.118";
+$host = "localhost";
 $user = "root";
 $password = "";
 $database = "db_pilpresma";
