@@ -15,7 +15,7 @@ if (isset($_POST["registerAdmin"])) {
 
     if ($registerStatus > 0) {
         $message = 'Anda berhasil Menambahkan Admin';
-        $location = '../pages/dashboard.php';
+        $location = '../dashboard/dashboard.php';
         echo "<body onload='success(\"$message\", \"$location\")'></body>";
     } else {
         $message = 'Password tidak sama';
@@ -28,7 +28,7 @@ if (isset($_POST["registerUser"])) {
 
     if ($registerStatus > 0) {
         $message = 'Anda berhasil Menambahkan User';
-        $location = '../pages/dashboard.php';
+        $location = '../dashboard/dashboard.php';
         echo "<body onload='success(\"$message\", \"$location\")'></body>";
     } else {
         $message = 'Terjadi kesalahan saat menambahkan mahasiswa';
@@ -96,8 +96,8 @@ if (isset($_POST["registerUser"])) {
                 width="150" />
         </div> -->
         <?php
-        require "./header.php";
-        require "./aside.php";
+        require "../components/header.php";
+        require "../components/aside.php";
 
         ?>
         <div class="content-wrapper">
@@ -111,7 +111,7 @@ if (isset($_POST["registerUser"])) {
                         <!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="./dashboard.php">Home</a></li>
+                                <li class="breadcrumb-item"><a href="../dashboard/dashboard.php">Home</a></li>
                                 <li class="breadcrumb-item active">Users</li>
                             </ol>
                         </div>
@@ -252,7 +252,7 @@ if (isset($_POST["registerUser"])) {
         </div>
         </section>
         <?php
-        require "./footer.php";
+        require "../components/footer.php";
         ?>
 
         <!-- Control Sidebar -->

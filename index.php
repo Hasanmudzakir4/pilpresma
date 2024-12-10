@@ -21,11 +21,11 @@ if (isset($_POST['login'])) {
         // Jika login berhasil, akan diarahkan sesuai role
         if ($_SESSION['role'] == 'admin') {
             $message = 'Anda berhasil login';
-            $location = './admin/src/pages/dashboard.php';
+            $location = './admin/pages/dashboard/dashboard.php';
             echo "<body onload='success(\"$message\", \"$location\")'></body>";
         } else {
             $message = 'Anda berhasil login!';
-            $location = "./pages/pemilih.php";
+            $location = "../pages/pemilih.php";
             echo "<body onload='success(\"$message\", \"$location\")'></body>";
         }
     } else {

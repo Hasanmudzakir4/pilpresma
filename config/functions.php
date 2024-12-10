@@ -212,7 +212,7 @@ function uploadFoto()
     $folderTujuan = __DIR__ . '/../admin/src/img/';
 
     // Generate nama file baru
-    $namaFileBaru = $namaFile; // Awalnya gunakan nama asli file
+    $namaFileBaru = $namaFile;
     $counter = 1;
 
     while (file_exists($folderTujuan . $namaFileBaru)) {

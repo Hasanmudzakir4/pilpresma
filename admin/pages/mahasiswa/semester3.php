@@ -66,8 +66,8 @@ require "../../../config/functions.php";
                 width="150" />
         </div>
         <?php
-        require "./header.php";
-        require "./aside.php";
+        require "../components/header.php";
+        require "../components/aside.php";
 
         ?>
 
@@ -79,13 +79,13 @@ require "../../../config/functions.php";
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1 class="m-0">Profile Kandidat</h1>
+                                <h1 class="m-0">Data Mahasiswa</h1>
                             </div>
                             <!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item"><a href="./dashboard.php">Home</a></li>
-                                    <li class="breadcrumb-item active">Profile Kandidat</li>
+                                    <li class="breadcrumb-item"><a href="../dashboard/dashboard.php">Home</a></li>
+                                    <li class="breadcrumb-item active">Semester 3</li>
                                 </ol>
                             </div>
                             <!-- /.col -->
@@ -94,63 +94,76 @@ require "../../../config/functions.php";
                     </div>
                     <!-- /.container-fluid -->
                 </div>
-            </section>
-            <!-- Main content -->
-            <section class="content">
-                <!-- Default box -->
-                <div class="card card-solid">
-                    <div class="card-body pb-0">
-                        <div class="row">
-                            <?php
-                            $kandidatList = getKandidat();
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Semester 3</h3>
 
-                            foreach ($kandidatList as $kandidat): ?>
-                                <div class="col-md-6">
-                                    <div class="card card-lightblue">
-                                        <div class="card-header">
-                                            <h3 class="card-title">
-                                                <i class="fa-solid fa-user-graduate"></i>
-                                                Profil Kandidat
-                                            </h3>
+                                    <div class="card-tools">
+                                        <div class="input-group input-group-sm" style="width: 150px;">
+                                            <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-default">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                        <!-- /.card-header -->
-                                        <div class="card-body">
-                                            <dl class="row">
-                                                <dt class="col-sm-4">Nama Lengkap</dt>
-                                                <dd class="col-sm-8"><?= $kandidat['nama_paslon']; ?></dd>
-                                                <dt class="col-sm-4">Visi</dt>
-                                                <dd class="col-sm-8"><q><?= $kandidat['visi']; ?></q></dd>
-                                                <dt class="col-sm-4">Misi</dt>
-                                                <dd class="col-sm-8">
-                                                    <?php
-                                                    $misiList = explode(" - ", $kandidat['misi']);
-                                                    echo "<ul>";
-                                                    foreach ($misiList as $misi) {
-                                                        echo "<li>" . $misi . "</li>";
-                                                    }
-                                                    echo "</ul>";
-                                                    ?>
-                                                </dd>
-                                            </dl>
-                                        </div>
-                                        <!-- /.card-body -->
                                     </div>
-                                    <!-- /.card -->
                                 </div>
-                                <!-- ./col -->
-                            <?php endforeach; ?>
+                                <!-- /.card-header -->
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover text-nowrap">
+                                        <thead class="bg-secondary">
+                                            <tr>
+                                                <th>No</th>
+                                                <th>NIM</th>
+                                                <th>Username</th>
+                                                <th>Nama Lengkap</th>
+                                                <th>Semester</th>
+                                                <th>Kelas</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <?php
+                                        $mahasiswaList = getMahasiswa(3);
+
+                                        $no = 1;
+                                        foreach ($mahasiswaList['data'] as $mahasiswa):
+                                        ?>
+                                            <tbody>
+                                                <tr>
+                                                    <td><?= $no; ?></td>
+                                                    <td><?= $mahasiswa['nim']; ?></td>
+                                                    <td><?= $mahasiswa['username']; ?></td>
+                                                    <td><?= $mahasiswa['nama_lengkap']; ?></td>
+                                                    <td><?= $mahasiswa['semester']; ?></td>
+                                                    <td><?= $mahasiswa['kelas']; ?></td>
+                                                    <td>
+                                                        <a href="#" class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-pen-to-square"></i> Update</a>
+                                                        <a href="#" class="btn btn-outline-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')"><i class="fa-solid fa-trash-can"></i> Delete</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        <?php
+                                            $no++;
+                                        endforeach; ?>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                            <!-- /.card -->
                         </div>
                     </div>
-                    <!-- /.card-body -->
                 </div>
-                <!-- /.card -->
-
             </section>
-            <!-- /.content -->
         </div>
         <?php
-        require "./footer.php";
+        require "../components/footer.php";
         ?>
+
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->

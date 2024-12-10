@@ -9,7 +9,6 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
 
 require "../../../config/functions.php";
 
-
 ?>
 
 <!DOCTYPE html>
@@ -66,8 +65,8 @@ require "../../../config/functions.php";
                 width="150" />
         </div>
         <?php
-        require "./header.php";
-        require "./aside.php";
+        require "../components/header.php";
+        require "../components/aside.php";
 
         ?>
 
@@ -84,7 +83,7 @@ require "../../../config/functions.php";
                             <!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item"><a href="./dashboard.php">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="../dashboard/dashboard.php">Home</a></li>
                                     <li class="breadcrumb-item active">Semester 5</li>
                                 </ol>
                             </div>
@@ -143,7 +142,10 @@ require "../../../config/functions.php";
                                                     <td><?= $mahasiswa['semester']; ?></td>
                                                     <td><?= $mahasiswa['kelas']; ?></td>
                                                     <td>
-                                                        <a href="#" class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-pen-to-square"></i> Update</a>
+                                                        <a href="#" class="btn btn-outline-warning btn-sm" data-toggle="modal" data-target="#modal-lg">
+                                                            <i class="fa-solid fa-pen-to-square"></i> Update
+                                                        </a>
+
                                                         <a href="#" class="btn btn-outline-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')"><i class="fa-solid fa-trash-can"></i> Delete</a>
                                                     </td>
                                                 </tr>
@@ -161,10 +163,62 @@ require "../../../config/functions.php";
                 </div>
             </section>
         </div>
-        <?php
-        require "./footer.php";
-        ?>
 
+        <!-- Modal Update -->
+        <div class="modal fade" id="modal-lg">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Update Data Mahasiswa</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="" method="POST">
+                            <div class="form-group">
+                                <label for="nim">NIM</label>
+                                <input type="text" class="form-control" id="nim" name="nim" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="nama_lengkap">Nama Lengkap</label>
+                                <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="semester">Semester</label>
+                                <input type="text" class="form-control" id="semester" name="semester" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="kelas">Kelas</label>
+                                <input type="text" class="form-control" id="kelas" name="kelas" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter new password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm Password</label>
+                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="Confirm new password">
+                            </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- /.modal -->
+
+        <!-- Footer -->
+        <?php
+        require "../components/footer.php";
+        ?>
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->
@@ -173,6 +227,40 @@ require "../../../config/functions.php";
     </div>
     <!-- ./wrapper -->
 
+    <script>
+        $(document).on("click", ".btn-update", function() {
+            const nim = $(this).data("nim"); // Ambil NIM dari tombol
+
+            // Kirim permintaan AJAX ke server
+            $.ajax({
+                url: "./semester5.php",
+                method: "GET",
+                data: {
+                    nim: nim
+                },
+                dataType: "json",
+                success: function(response) {
+                    if (response.success) {
+                        const data = response.data;
+
+                        // Isi data di modal
+                        $("#nim").val(data.nim);
+                        $("#username").val(data.username);
+                        $("#nama_lengkap").val(data.nama_lengkap);
+                        $("#semester").val(data.semester);
+                        $("#kelas").val(data.kelas);
+                        $("#password").val("");
+                        $("#confirm_password").val("");
+                    } else {
+                        alert("Data mahasiswa tidak ditemukan!");
+                    }
+                },
+                error: function() {
+                    alert("Terjadi kesalahan saat mengambil data!");
+                },
+            });
+        });
+    </script>
     <!-- jQuery -->
     <script src="../../plugins/jquery/jquery.min.js"></script>
     <!-- jQuery UI 1.11.4 -->

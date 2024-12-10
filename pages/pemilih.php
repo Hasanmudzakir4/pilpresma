@@ -2,8 +2,8 @@
 session_start();
 
 // Periksa apakah user sudah login
-if (!isset($_SESSION['username'])) {
-  echo "<script>alert('Anda harus login untuk memilih!'); window.location.href = '../index.php';</script>";
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'mahasiswa') {
+  header("Location: ../index.php");
   exit;
 }
 

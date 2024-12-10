@@ -9,6 +9,8 @@ if (isset($_GET['logout']) && $_GET['logout'] == 'confirm') {
     header("Location: ../../../index.php");
     exit;
 }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -42,7 +44,7 @@ if (isset($_GET['logout']) && $_GET['logout'] == 'confirm') {
                     window.location.href = 'logout.php?logout=confirm';
                 });
             } else {
-                window.location.href = 'dashboard.php'; // Atur ke halaman yang sesuai
+                window.location.href = '../dashboard/dashboard.php';
             }
         });
     </script>

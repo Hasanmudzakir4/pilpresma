@@ -15,7 +15,7 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-md dropdown-menu-right">
                     <div class="dropdown-divider"></div>
-                    <a href="./logout.php" class="dropdown-item">
+                    <a href="../auth/logout.php" class="dropdown-item">
                         <i class="fas fa-solid fa-right-to-bracket"></i> Logout
                     </a>
                 </div>

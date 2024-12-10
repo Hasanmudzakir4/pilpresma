@@ -71,8 +71,8 @@ $totalBelumMemilih = count($mahasiswaStatus['belumMemilih']);
             <img class="animation__shake" src="../../../src/img/ppu.png" alt="AdminLTELogo" height="150" width="150" />
         </div>
         <?php
-        require "./header.php";
-        require "./aside.php";
+        require "../components/header.php";
+        require "../components/aside.php";
         ?>
 
         <!-- Content Wrapper. Contains page content -->
@@ -142,7 +142,7 @@ $totalBelumMemilih = count($mahasiswaStatus['belumMemilih']);
                                 <div class="icon">
                                     <i class="fa-solid fa-user-graduate"></i>
                                 </div>
-                                <a href="./profileKandidat.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="../kandidat/profileKandidat.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                         <!-- ./col -->
@@ -156,7 +156,7 @@ $totalBelumMemilih = count($mahasiswaStatus['belumMemilih']);
                                 <div class="icon">
                                     <i class="fa-solid fa-user-check"></i>
                                 </div>
-                                <a href="./sudahMemilih.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="../bilikSuara/sudahMemilih.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                         <div class="col-lg-3 col-6">
@@ -169,7 +169,7 @@ $totalBelumMemilih = count($mahasiswaStatus['belumMemilih']);
                                 <div class="icon">
                                     <i class="fa-solid fa-user-xmark"></i>
                                 </div>
-                                <a href="./belumMemilih.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                <a href="../bilikSuara/belumMemilih.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                             </div>
                             <!-- ./col -->
                         </div>
@@ -212,7 +212,7 @@ $totalBelumMemilih = count($mahasiswaStatus['belumMemilih']);
             </section>
         </div>
         <?php
-        require "./footer.php";
+        require "../components/footer.php";
         ?>
 
         <!-- Control Sidebar -->

@@ -9,11 +9,10 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
 
 require "../../../config/functions.php";
 
-
 if (isset($_POST["addKandidat"])) {
     if (tambahKandidat($_POST) > 0) {
         $message = 'Berhasil menambahkan kandidat!';
-        $location = '../pages/dashboard.php';
+        $location = '../dashboard/dashboard.php';
         echo "<body onload='success(\"$message\", \"$location\")'></body>";
     } else {
         $message = 'Gagal menambahkan kandidat!';
@@ -33,7 +32,8 @@ if (isset($_POST["addKandidat"])) {
     <title>Admin PPU</title>
 
     <link rel="shortcut icon" type="image/png" href="../../../src/img/ppu.png" />
-
+    <!-- Link ke Sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
     <!-- Font Awesome -->
@@ -63,8 +63,8 @@ if (isset($_POST["addKandidat"])) {
             <img class="animation__shake" src="../../../src/img/ppu.png" alt="AdminLTELogo" height="150" width="150" />
         </div>
         <?php
-        require "./header.php";
-        require "./aside.php";
+        require "../components/header.php";
+        require "../components/aside.php";
 
         ?>
 
@@ -81,7 +81,7 @@ if (isset($_POST["addKandidat"])) {
                             <!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item"><a href="./dashboard.php">Home</a></li>
+                                    <li class="breadcrumb-item"><a href="../dashboard/dashboard.php">Home</a></li>
                                     <li class="breadcrumb-item active">Kandidat</li>
                                 </ol>
                             </div>
@@ -141,7 +141,7 @@ if (isset($_POST["addKandidat"])) {
             </section>
         </div>
         <?php
-        require "./footer.php";
+        require "../components/footer.php";
         ?>
 
         <!-- Control Sidebar -->

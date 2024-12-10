@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Periksa apakah user sudah login dan role-nya adalah admin
+// Periksa apakah user sudah login dan role-nya adalah user
 if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../../../index.php");
     exit;
@@ -21,21 +21,31 @@ require "../../../config/functions.php";
 
     <link rel="shortcut icon" type="image/png" href="../../../src/img/ppu.png" />
     <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+    <link
+        rel="stylesheet"
+        href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
     <!-- Tempusdominus Bootstrap 4 -->
-    <link rel="stylesheet" href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
+    <link
+        rel="stylesheet"
+        href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
     <!-- iCheck -->
-    <link rel="stylesheet" href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css" />
+    <link
+        rel="stylesheet"
+        href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css" />
     <!-- JQVMap -->
     <link rel="stylesheet" href="../../plugins/jqvmap/jqvmap.min.css" />
     <!-- Theme style -->
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
     <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="../../plugins/overlayScrollbars/css/OverlayScrollbars.min.css" />
+    <link
+        rel="stylesheet"
+        href="../../plugins/overlayScrollbars/css/OverlayScrollbars.min.css" />
     <!-- Daterange picker -->
     <link rel="stylesheet" href="../../plugins/daterangepicker/daterangepicker.css" />
     <!-- summernote -->
@@ -45,12 +55,19 @@ require "../../../config/functions.php";
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
         <!-- Preloader -->
-        <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="../../../src/img/ppu.png" alt="AdminLTELogo" height="150" width="150" />
+        <div
+            class="preloader flex-column justify-content-center align-items-center">
+            <img
+                class="animation__shake"
+                src="../../../src/img/ppu.png"
+                alt="AdminLTELogo"
+                height="150"
+                width="150" />
         </div>
         <?php
-        require "./header.php";
-        require "./aside.php";
+        require "../components/header.php";
+        require "../components/aside.php";
+
         ?>
 
         <!-- Content Wrapper. Contains page content -->
@@ -61,13 +78,13 @@ require "../../../config/functions.php";
                     <div class="container-fluid">
                         <div class="row mb-2">
                             <div class="col-sm-6">
-                                <h1 class="m-0">Bilik Suara</h1>
+                                <h1 class="m-0">Data Mahasiswa</h1>
                             </div>
                             <!-- /.col -->
                             <div class="col-sm-6">
                                 <ol class="breadcrumb float-sm-right">
-                                    <li class="breadcrumb-item"><a href="./dashboard.php">Home</a></li>
-                                    <li class="breadcrumb-item active">Belum Memilih</li>
+                                    <li class="breadcrumb-item"><a href="../dashboard/dashboard.php">Home</a></li>
+                                    <li class="breadcrumb-item active">Semester 7</li>
                                 </ol>
                             </div>
                             <!-- /.col -->
@@ -81,7 +98,7 @@ require "../../../config/functions.php";
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Belum Memilih</h3>
+                                    <h3 class="card-title">Semester 7</h3>
 
                                     <div class="card-tools">
                                         <div class="input-group input-group-sm" style="width: 150px;">
@@ -98,31 +115,36 @@ require "../../../config/functions.php";
                                 <!-- /.card-header -->
                                 <div class="card-body table-responsive p-0">
                                     <table class="table table-hover text-nowrap">
+
                                         <thead class="bg-secondary">
                                             <tr>
                                                 <th>No</th>
                                                 <th>NIM</th>
+                                                <th>Username</th>
                                                 <th>Nama Lengkap</th>
                                                 <th>Semester</th>
                                                 <th>Kelas</th>
-                                                <th>Status</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <?php
+                                        $mahasiswaList = getMahasiswa(7);
 
                                         $no = 1;
-                                        $mahasiswaStatus = getStatusPemilihan(null);
-                                        $belumMemilih = $mahasiswaStatus['belumMemilih'];
-                                        foreach ($belumMemilih as $mahasiswa) :
+                                        foreach ($mahasiswaList['data'] as $mahasiswa):
                                         ?>
                                             <tbody>
                                                 <tr>
                                                     <td><?= $no; ?></td>
                                                     <td><?= $mahasiswa['nim']; ?></td>
+                                                    <td><?= $mahasiswa['username']; ?></td>
                                                     <td><?= $mahasiswa['nama_lengkap']; ?></td>
                                                     <td><?= $mahasiswa['semester']; ?></td>
                                                     <td><?= $mahasiswa['kelas']; ?></td>
-                                                    <td>❌</td>
+                                                    <td>
+                                                        <a href="#" class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-pen-to-square"></i> Update</a>
+                                                        <a href="#" class="btn btn-outline-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')"><i class="fa-solid fa-trash-can"></i> Delete</a>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         <?php
@@ -139,7 +161,7 @@ require "../../../config/functions.php";
             </section>
         </div>
         <?php
-        require "./footer.php";
+        require "../components/footer.php";
         ?>
 
         <!-- Control Sidebar -->
