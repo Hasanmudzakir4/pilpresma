@@ -36,7 +36,7 @@ Aplikasi Pemilihan Ketua Senat Mahasiswa adalah sebuah aplikasi berbasis web yan
 2. **Buat Database di MySQL**
    - Buka phpMyAdmin melalui XAMPP (akses melalui browser di http://localhost/phpmyadmin).
    - Buat database baru dengan nama db_pilpresma.
-   - Impor file database yang telah disediakan dalam folder sql/ (db/db_pilpresma.sql) ke dalam database db_pilpresma yang baru dibuat.
+   - Impor file database yang telah disediakan dalam folder db/ (db_pilpresma.sql) ke dalam database db_pilpresma yang baru dibuat.
 
 3. **Konfigurasi Koneksi Database**
    - Edit file config.php dan sesuaikan dengan kredensial MySQL Anda jika diperlukan.
