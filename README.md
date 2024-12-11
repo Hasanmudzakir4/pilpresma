@@ -44,5 +44,5 @@ Aplikasi Pemilihan Ketua Senat Mahasiswa adalah sebuah aplikasi berbasis web yan
 Jalankan Aplikasi
 
 4.  Jalankan Aplikasi
-- Pindahkan folder aplikasi ke dalam folder htdocs di direktori instalasi XAMPP.
-- Akses aplikasi melalui browser di http://localhost/pilpresma.
+   - Pindahkan folder aplikasi ke dalam folder htdocs di direktori instalasi XAMPP.
+   - Akses aplikasi melalui browser di http://localhost/pilpresma.
