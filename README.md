@@ -41,8 +41,7 @@ Aplikasi Pemilihan Ketua Senat Mahasiswa adalah sebuah aplikasi berbasis web yan
 3. Konfigurasi Koneksi Database
    - Edit file config.php dan sesuaikan dengan kredensial MySQL Anda jika diperlukan.
    - Pastikan pengaturan database pada file config.php sesuai dengan nama database yang telah Anda buat (db_pilpresma), username, dan password.
-Jalankan Aplikasi
 
-4.  Jalankan Aplikasi
+4. Jalankan Aplikasi
    - Pindahkan folder aplikasi ke dalam folder htdocs di direktori instalasi XAMPP.
    - Akses aplikasi melalui browser di http://localhost/pilpresma.
