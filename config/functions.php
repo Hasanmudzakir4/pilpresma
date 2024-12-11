@@ -292,8 +292,10 @@ function getMahasiswa($semester = null)
     $query .= " ORDER BY 
                     CASE 
                 WHEN kelas = 'Pusat/ Teknologi' THEN 1
-                WHEN kelas = 'Laborti' THEN 2
-                WHEN kelas = 'Tasik' THEN 3
+                WHEN kelas = 'A TI 01' THEN 2
+                WHEN kelas = 'A TI 02' THEN 3
+                WHEN kelas = 'B TI 01' THEN 4
+                WHEN kelas = 'Tasik' THEN 5
                 ELSE 4
                     END,
                 nama_lengkap ASC";
@@ -336,9 +338,11 @@ function getStatusPemilihan($semester = null)
     $query .= " ORDER BY 
                     CASE 
                 WHEN m.kelas = 'Pusat/ Teknologi' THEN 1
-                WHEN m.kelas = 'Laborti' THEN 2
-                WHEN m.kelas = 'Tasik' THEN 3
-                    ELSE 4
+                WHEN m.kelas = 'A TI 01' THEN 2
+                WHEN m.kelas = 'A TI 02' THEN 3
+                WHEN m.kelas = 'B TI 01' THEN 4
+                WHEN m.kelas = 'Tasik' THEN 4
+                    ELSE 5
                 END,
                     FIELD(m.semester, 1, 3, 5, 7), m.nama_lengkap ASC";
 

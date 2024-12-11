@@ -28,7 +28,7 @@ if (isset($_POST["registerUser"])) {
 
     if ($registerStatus > 0) {
         $message = 'Anda berhasil Menambahkan User';
-        $location = '../dashboard/dashboard.php';
+        $location = './register.php';
         echo "<body onload='success(\"$message\", \"$location\")'></body>";
     } else {
         $message = 'Terjadi kesalahan saat menambahkan mahasiswa';
@@ -214,7 +214,9 @@ if (isset($_POST["registerUser"])) {
                                         <label>Kelas</label>
                                         <select class="form-control select2" style="width: 100%;" name="kelas" required>
                                             <option value="Pusat/ Teknologi">Pusat/ Teknologi</option>
-                                            <option value="Laborti">Laborti</option>
+                                            <option value="A TI 01">A TI 01</option>
+                                            <option value="A TI 02">A TI 02</option>
+                                            <option value="B TI 01">Laborti</option>
                                             <option value="Tasik">Tasik</option>
                                         </select>
                                     </div>
