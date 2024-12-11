@@ -14,7 +14,7 @@ Aplikasi Pemilihan Ketua Senat Mahasiswa adalah sebuah aplikasi berbasis web yan
 
 ## Teknologi yang Digunakan
 
-- **Frontend**: HTML, CSS, JavaScript, [AdminLTE3](https://adminlte.io/)(untuk tampilan admin dashboard)
+- **Frontend**: HTML, CSS, JavaScript, [AdminLTE3](https://adminlte.io/) (untuk tampilan admin dashboard).
 - **Backend**: PHP (versi 8.0.30)
 - **Database**: MySQL (XAMPP digunakan untuk pengembangan lokal)
 - **Web Server**: Apache (XAMPP digunakan untuk pengembangan lokal)
