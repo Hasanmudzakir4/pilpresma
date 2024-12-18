@@ -21,8 +21,8 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 </a>
             </li>
             <!-- Bilik Suara Menu -->
-            <li class="nav-item <?php echo (in_array($currentPage, ['sudahMemilih.php', 'belumMemilih.php'])) ? 'menu-open' : ''; ?>">
-                <a href="#" class="nav-link <?php echo (in_array($currentPage, ['sudahMemilih.php', 'belumMemilih.php'])) ? 'active' : ''; ?>">
+            <li class="nav-item <?php echo (in_array($currentPage, ['sudahMemilih.php', 'belumMemilih.php', 'hasil.php'])) ? 'menu-open' : ''; ?>">
+                <a href="#" class="nav-link <?php echo (in_array($currentPage, ['sudahMemilih.php', 'belumMemilih.php', 'hasil.php'])) ? 'active' : ''; ?>">
                     <i class="nav-icon fa-solid fa-user-check"></i>
                     <p>Bilik Suara<i class="fas fa-angle-left right"></i></p>
                 </a>
@@ -37,6 +37,12 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                         <a href="../bilikSuara/belumMemilih.php" class="nav-link <?php echo ($currentPage == 'belumMemilih.php') ? 'active' : ''; ?>">
                             <i class="far fa-circle nav-icon"></i>
                             <p>Belum Memilih</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="../bilikSuara/hasil.php" class="nav-link <?php echo ($currentPage == 'hasil.php') ? 'active' : ''; ?>">
+                            <i class="far fa-circle nav-icon"></i>
+                            <p>Hasil Suara</p>
                         </a>
                     </li>
                 </ul>

@@ -25,7 +25,7 @@ if (isset($_POST['login'])) {
             echo "<body onload='success(\"$message\", \"$location\")'></body>";
         } else {
             $message = 'Anda berhasil login!';
-            $location = "../pages/pemilih.php";
+            $location = "./pages/pemilih.php";
             echo "<body onload='success(\"$message\", \"$location\")'></body>";
         }
     } else {

@@ -9,6 +9,11 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
 
 require "../../../config/functions.php";
 
+// Data suara berdasarkan paslon
+$suaraPaslon = getSuaraPaslon();
+$labels = $suaraPaslon['labels'];
+$data = $suaraPaslon['data'];
+
 // Menghitung total suara
 $totalSuara = getTotalSuara();
 
@@ -95,79 +100,31 @@ $totalPemilihan = getTotalPemilihan();
             <!-- Main content -->
             <section class="content">
                 <div class="container-fluid">
-                    <!-- Small boxes (Stat box) -->
-                    <div class="row">
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-gray">
-                                <div class="inner">
-                                    <h3><?= $totalMahasiswa; ?></h3>
-                                    <p>Mahasiswa</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa-solid fa-users"></i>
-                                </div>
-                                <a href="../mahasiswa/semester1.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+
+                    <!-- PIE CHART -->
+                    <div class="card card-indigo">
+                        <div class="card-header">
+                            <h3 class="card-title">
+                                <i class="far fa-chart-bar"></i>
+                                Hasil Pemungutan Suara
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                            <div class="mt-3 text-center">
+                                <?php
+                                $output = "";
+                                foreach ($labels as $index => $label) {
+                                    $output .= "<span class='mx-3'><strong>$label</strong> : " . $data[$index] . " suara</span>";
+                                }
+                                echo $output;
+                                ?>
+                                <p class="mt-3"><strong>Total Suara:</strong> <?= $totalSuara; ?></p>
                             </div>
                         </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-success">
-                                <div class="inner">
-                                    <h3><?= $totalAdmin; ?></h3>
-                                    <p>Admin</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa-solid fa-user-tie"></i>
-                                </div>
-                                <a href="./admin.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-warning">
-                                <div class="inner">
-                                    <h3><?= $totalPaslon; ?></h3>
-                                    <p>Kandidat</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa-solid fa-user-graduate"></i>
-                                </div>
-                                <a href="../kandidat/profileKandidat.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <!-- ./col -->
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-primary">
-                                <div class="inner">
-                                    <h3><?= $totalPemilihan['sudahMemilih']; ?></h3>
-                                    <p>Sudah Memilih</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa-solid fa-user-check"></i>
-                                </div>
-                                <a href="../bilikSuara/sudahMemilih.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                        </div>
-                        <div class="col-lg-3 col-6">
-                            <!-- small box -->
-                            <div class="small-box bg-danger">
-                                <div class="inner">
-                                    <h3><?= $totalPemilihan['belumMemilih']; ?></h3>
-                                    <p>Belum Memilih</p>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa-solid fa-user-xmark"></i>
-                                </div>
-                                <a href="../bilikSuara/belumMemilih.php" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                            </div>
-                            <!-- ./col -->
-                        </div>
-                        <!-- /.row -->
+                        <!-- /.card-body -->
                     </div>
+                    <!-- /.col -->
 
                     <!-- /.container-fluid -->
                 </div>
@@ -195,6 +152,30 @@ $totalPemilihan = getTotalPemilihan();
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <!-- AdminLTE App -->
     <script src="../../dist/js/adminlte.js"></script>
+
+    <script>
+        $(function() {
+            var pieData = {
+                labels: <?php echo json_encode($labels); ?>,
+                datasets: [{
+                    data: <?php echo json_encode($data); ?>,
+                    backgroundColor: ['#ff0000', '#0000ff', '#ffff00', '#00ff00'],
+                }]
+            };
+
+            var pieChartCanvas = $('#pieChart').get(0).getContext('2d');
+            var pieOptions = {
+                maintainAspectRatio: false,
+                responsive: true,
+            };
+
+            new Chart(pieChartCanvas, {
+                type: 'pie',
+                data: pieData,
+                options: pieOptions
+            });
+        });
+    </script>
 </body>
 
 </html>

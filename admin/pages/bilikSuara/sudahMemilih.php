@@ -9,6 +9,19 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
 
 require "../../../config/functions.php";
 
+$jumlahDataPerHalaman = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $jumlahDataPerHalaman;
+$search = isset($_GET['search']) ? $_GET['search'] : null;
+
+// Ambil data mahasiswa
+$mahasiswaStatus = getPemilihan(null, $jumlahDataPerHalaman, $offset, $search);
+$sudahMemilih = $mahasiswaStatus['sudahMemilih'];
+
+// Hitung total data
+$totalData = getTotalData(null, $search);
+$jumlahHalaman = ceil($totalData / $jumlahDataPerHalaman);
+
 ?>
 
 <!DOCTYPE html>
@@ -21,31 +34,21 @@ require "../../../config/functions.php";
 
     <link rel="shortcut icon" type="image/png" href="../../../src/img/ppu.png" />
     <!-- Google Font: Source Sans Pro -->
-    <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
     <!-- Ionicons -->
-    <link
-        rel="stylesheet"
-        href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" />
     <!-- Tempusdominus Bootstrap 4 -->
-    <link
-        rel="stylesheet"
-        href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
+    <link rel="stylesheet" href="../../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css" />
     <!-- iCheck -->
-    <link
-        rel="stylesheet"
-        href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css" />
+    <link rel="stylesheet" href="../../plugins/icheck-bootstrap/icheck-bootstrap.min.css" />
     <!-- JQVMap -->
     <link rel="stylesheet" href="../../plugins/jqvmap/jqvmap.min.css" />
     <!-- Theme style -->
     <link rel="stylesheet" href="../../dist/css/adminlte.min.css" />
     <!-- overlayScrollbars -->
-    <link
-        rel="stylesheet"
-        href="../../plugins/overlayScrollbars/css/OverlayScrollbars.min.css" />
+    <link rel="stylesheet" href="../../plugins/overlayScrollbars/css/OverlayScrollbars.min.css" />
     <!-- Daterange picker -->
     <link rel="stylesheet" href="../../plugins/daterangepicker/daterangepicker.css" />
     <!-- summernote -->
@@ -55,19 +58,12 @@ require "../../../config/functions.php";
 <body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
         <!-- Preloader -->
-        <div
-            class="preloader flex-column justify-content-center align-items-center">
-            <img
-                class="animation__shake"
-                src="../../../src/img/ppu.png"
-                alt="AdminLTELogo"
-                height="150"
-                width="150" />
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__shake" src="../../../src/img/ppu.png" alt="AdminLTELogo" height="150" width="150" />
         </div>
         <?php
         require "../components/header.php";
         require "../components/aside.php";
-
         ?>
 
         <!-- Content Wrapper. Contains page content -->
@@ -101,15 +97,17 @@ require "../../../config/functions.php";
                                     <h3 class="card-title">Sudah Memilih</h3>
 
                                     <div class="card-tools">
-                                        <div class="input-group input-group-sm" style="width: 150px;">
-                                            <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                                        <form action="" method="GET">
+                                            <div class="input-group input-group-sm" style="width: 150px;">
+                                                <input type="text" name="search" class="form-control float-right" placeholder="Search">
 
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-default">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
+                                                <div class="input-group-append">
+                                                    <button type="submit" class="btn btn-default">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                                 <!-- /.card-header -->
@@ -123,13 +121,12 @@ require "../../../config/functions.php";
                                                 <th>Semester</th>
                                                 <th>Kelas</th>
                                                 <th>Status</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <?php
 
-                                        $no = 1;
-                                        $mahasiswaStatus = getStatusPemilihan(null);
-                                        $sudahMemilih = $mahasiswaStatus['sudahMemilih'];
+                                        $no = $offset + 1;
                                         foreach ($sudahMemilih as $mahasiswa) :
                                         ?>
                                             <tbody>
@@ -139,7 +136,10 @@ require "../../../config/functions.php";
                                                     <td><?= $mahasiswa['nama_lengkap']; ?></td>
                                                     <td><?= $mahasiswa['semester']; ?></td>
                                                     <td><?= $mahasiswa['kelas']; ?></td>
-                                                    <td>✅</td>
+                                                    <td>❌</td>
+                                                    <td>
+                                                        <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-trash-can"></i> Delete</a>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         <?php
@@ -150,6 +150,36 @@ require "../../../config/functions.php";
                                 <!-- /.card-body -->
                             </div>
                             <!-- /.card -->
+                            <div class="card-footer clearfix">
+                                <ul class="pagination pagination-sm m-0 float-right">
+                                    <!-- Tombol Previous -->
+                                    <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $page - 1 ?>&search=<?= htmlspecialchars($search) ?>" aria-label="Previous">
+                                            &laquo;
+                                        </a>
+                                    </li>
+
+                                    <?php
+                                    // Menentukan batas halaman yang akan ditampilkan
+                                    $start_page = max(1, $page - 2);
+                                    $end_page = min($jumlahHalaman, $page + 2);
+
+                                    // Membatasi tampilan pagination pada 5 halaman
+                                    for ($i = $start_page; $i <= $end_page; $i++) :
+                                    ?>
+                                        <li class="page-item <?= ($i === $page) ? 'active' : '' ?>">
+                                            <a class="page-link" href="?page=<?= $i ?>&search=<?= htmlspecialchars($search) ?>"> <?= $i ?> </a>
+                                        </li>
+                                    <?php endfor; ?>
+
+                                    <!-- Tombol Next -->
+                                    <li class="page-item <?= ($page >= $jumlahHalaman) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= $page + 1 ?>&search=<?= htmlspecialchars($search) ?>" aria-label="Next">
+                                            &raquo;
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -9,6 +9,22 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
 
 require "../../../config/functions.php";
 
+$jumlahDataPerHalaman = 10;
+$semesterAktif = 5;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $jumlahDataPerHalaman;
+
+$mahasiswaList = getMahasiswa($semesterAktif, $offset, $jumlahDataPerHalaman);
+$jumlahData = $mahasiswaList['total'];
+$jumlahHalaman = ceil($jumlahData / $jumlahDataPerHalaman);
+
+if (isset($_POST['search'])) {
+    $keyword = $_POST['input'];
+    $mahasiswaList['data'] = search($keyword, $semesterAktif);
+    $jumlahData = count($mahasiswaList['data']);
+    $jumlahHalaman = 1;
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -101,15 +117,17 @@ require "../../../config/functions.php";
                                     <h3 class="card-title">Semester 5</h3>
 
                                     <div class="card-tools">
-                                        <div class="input-group input-group-sm" style="width: 150px;">
-                                            <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                                        <form action="" method="POST">
+                                            <div class="input-group input-group-sm" style="width: 150px;">
+                                                <input type="text" name="input" class="form-control float-right" placeholder="Search" autocomplete="off">
 
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-default">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
+                                                <div class="input-group-append">
+                                                    <button type="submit" name="search" class="btn btn-default">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                                 <!-- /.card-header -->
@@ -127,10 +145,7 @@ require "../../../config/functions.php";
                                             </tr>
                                         </thead>
                                         <?php
-
-                                        $mahasiswaList = getMahasiswa(5);
-
-                                        $no = 1;
+                                        $no = $offset + 1;
                                         foreach ($mahasiswaList['data'] as $mahasiswa):
                                         ?>
                                             <tbody>
@@ -158,6 +173,36 @@ require "../../../config/functions.php";
                                 <!-- /.card-body -->
                             </div>
                             <!-- /.card -->
+                            <div class="card-footer clearfix">
+                                <ul class="pagination pagination-sm m-0 float-right">
+                                    <!-- Tombol Previous -->
+                                    <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= ($page > 1) ? $page - 1 : 1 ?>" aria-label="Previous">
+                                            &laquo;
+                                        </a>
+                                    </li>
+
+                                    <?php
+                                    // Menentukan batas halaman yang akan ditampilkan
+                                    $start_page = max(1, $page - 2);
+                                    $end_page = min($jumlahHalaman, $page + 2);
+
+                                    // Membatasi tampilan pagination pada 5 halaman
+                                    for ($i = $start_page; $i <= $end_page; $i++) {
+                                        echo '<li class="page-item ' . ($i === $page ? 'active' : '') . '">
+                                                <a class="page-link" href="?page=' . $i . '">' . $i . '</a>
+                                            </li>';
+                                    }
+                                    ?>
+                                    <!-- Tombol Next -->
+                                    <li class="page-item <?= ($page >= $jumlahHalaman) ? 'disabled' : '' ?>">
+                                        <a class="page-link" href="?page=<?= ($page < $jumlahHalaman) ? $page + 1 : $jumlahHalaman ?>" aria-label="Next">
+                                            &raquo;
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /.card-footer -->
                         </div>
                     </div>
                 </div>

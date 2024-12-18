@@ -9,6 +9,20 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'admin') {
 
 require "../../../config/functions.php";
 
+$jumlahDataPerHalaman = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $jumlahDataPerHalaman;
+
+$mahasiswaList = getMahasiswa(1, $offset, $jumlahDataPerHalaman);
+$jumlahData = $mahasiswaList['total'];
+$jumlahHalaman = ceil($jumlahData / $jumlahDataPerHalaman);
+
+if (isset($_POST['search'])) {
+    $keyword = $_POST['input'];
+    $mahasiswaList['data'] = search($keyword, 1);
+    $jumlahData = count($mahasiswaList['data']);
+    $jumlahHalaman = 1;
+}
 
 ?>
 
@@ -51,6 +65,9 @@ require "../../../config/functions.php";
     <link rel="stylesheet" href="../../plugins/daterangepicker/daterangepicker.css" />
     <!-- summernote -->
     <link rel="stylesheet" href="../../plugins/summernote/summernote-bs4.min.css" />
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -100,17 +117,18 @@ require "../../../config/functions.php";
                             <div class="card">
                                 <div class="card-header">
                                     <h3 class="card-title">Semester 1</h3>
-
                                     <div class="card-tools">
-                                        <div class="input-group input-group-sm" style="width: 150px;">
-                                            <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+                                        <form action="" method="POST">
+                                            <div class="input-group input-group-sm" style="width: 150px;">
+                                                <input type="text" name="input" class="form-control float-right" placeholder="Search" autocomplete="off">
 
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-default">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
+                                                <div class="input-group-append">
+                                                    <button type="submit" name="search" class="btn btn-default">
+                                                        <i class="fas fa-search"></i>
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                     </div>
                                 </div>
                                 <!-- /.card-header -->
@@ -128,10 +146,9 @@ require "../../../config/functions.php";
                                             </tr>
                                         </thead>
                                         <?php
-                                        $mahasiswaList = getMahasiswa(1);
-
-                                        $no = 1;
+                                        $no = $offset + 1;
                                         foreach ($mahasiswaList['data'] as $mahasiswa):
+
                                         ?>
                                             <tbody>
                                                 <tr>
@@ -142,58 +159,68 @@ require "../../../config/functions.php";
                                                     <td><?= $mahasiswa['semester']; ?></td>
                                                     <td><?= $mahasiswa['kelas']; ?></td>
                                                     <td>
-                                                        <a href="#" class="btn btn-outline-warning btn-sm" data-toggle="modal" data-target="#modal-lg"><i class="fa-solid fa-pen-to-square"></i> Update</a>
-                                                        <a href="#" class="btn btn-outline-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus data ini?')"><i class="fa-solid fa-trash-can"></i> Delete</a>
+                                                        <a href="#" class="btn btn-outline-warning btn-sm"><i class="fa-solid fa-pen-to-square"></i> Update</a>
+                                                        <a href="#" class="btn btn-outline-danger btn-sm"><i class="fa-solid fa-trash-can"></i> Delete</a>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         <?php
                                             $no++;
-                                        endforeach; ?>
+                                        endforeach;
+                                        ?>
                                     </table>
                                 </div>
-                                <!-- /.card-body -->
+                                <!-- /.card -->
+                                <div class="card-footer clearfix">
+                                    <ul class="pagination pagination-sm m-0 float-right">
+                                        <!-- Tombol Previous -->
+                                        <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                                            <a class="page-link" href="?page=<?= ($page > 1) ? $page - 1 : 1 ?>" aria-label="Previous">
+                                                &laquo;
+                                            </a>
+                                        </li>
+
+                                        <?php
+                                        // Menentukan batas halaman yang akan ditampilkan
+                                        $start_page = max(1, $page - 2);
+                                        $end_page = min($jumlahHalaman, $page + 2);
+
+                                        // Membatasi tampilan pagination pada 5 halaman
+                                        for ($i = $start_page; $i <= $end_page; $i++) {
+                                            echo '<li class="page-item ' . ($i === $page ? 'active' : '') . '">
+                                                <a class="page-link" href="?page=' . $i . '">' . $i . '</a>
+                                            </li>';
+                                        }
+                                        ?>
+                                        <!-- Tombol Next -->
+                                        <li class="page-item <?= ($page >= $jumlahHalaman) ? 'disabled' : '' ?>">
+                                            <a class="page-link" href="?page=<?= ($page < $jumlahHalaman) ? $page + 1 : $jumlahHalaman ?>" aria-label="Next">
+                                                &raquo;
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!-- /.card-footer -->
                             </div>
-                            <!-- /.card -->
+                            <!-- /.card-body -->
                         </div>
                     </div>
                 </div>
-            </section>
         </div>
-        <?php
-        require "../components/footer.php";
-        ?>
+        </section>
+    </div>
+    <?php
+    require "../components/footer.php";
+    ?>
 
+    </div>
+    <!-- /.modal -->
 
-        <!-- Modal Update -->
-        <div class="modal fade" id="modal-lg">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Large Modal</h4>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>One fine body&hellip;</p>
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
-                <!-- /.modal-content -->
-            </div>
-            <!-- /.modal-dialog -->
-        </div>
-        <!-- /.modal -->
-
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+        <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
 

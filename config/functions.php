@@ -278,12 +278,11 @@ function getKandidat()
     return $kandidat;
 }
 
-// Ambil data Mahasiswa
-function getMahasiswa($semester = null)
+function getMahasiswa($semester = null, $offset, $limit)
 {
     global $conn;
 
-    $query = "SELECT * FROM mahasiswa ";
+    $query = "SELECT * FROM mahasiswa";
 
     if ($semester !== null) {
         $query .= " WHERE semester = '$semester'";
@@ -298,7 +297,8 @@ function getMahasiswa($semester = null)
                 WHEN kelas = 'Tasik' THEN 5
                 ELSE 4
                     END,
-                nama_lengkap ASC";
+                nama_lengkap ASC
+                LIMIT $offset, $limit";
 
     $result = mysqli_query($conn, $query);
 
@@ -306,46 +306,111 @@ function getMahasiswa($semester = null)
         die("Error: " . mysqli_error($conn));
     }
 
-
     $mahasiswa = [];
     while ($row = mysqli_fetch_assoc($result)) {
         $mahasiswa[] = $row;
     }
 
-    // Menghitung total mahasiswa
-    $totalMahasiswa = count($mahasiswa);
+    // Hitung total mahasiswa
+    $queryTotal = "SELECT COUNT(*) AS total FROM mahasiswa";
+    if ($semester !== null) {
+        $queryTotal .= " WHERE semester = '$semester'";
+    }
+    $resultTotal = mysqli_query($conn, $queryTotal);
 
-    return ['data' => $mahasiswa, 'total' => $totalMahasiswa];
+    $totalRow = mysqli_fetch_assoc($resultTotal)['total'];
+
+    return ['data' => $mahasiswa, 'total' => $totalRow];
 }
 
+
 // Ambil data yang sudah memilih dan belum memilih
-function getStatusPemilihan($semester = null)
+// function getStatusPemilihan($semester = null)
+// {
+//     global $conn;
+
+//     // Query untuk mendapatkan data mahasiswa beserta status pemilihannya
+//     $query = "SELECT m.nim, m.nama_lengkap, m.kelas, m.semester, 
+//                      IF(p.username IS NULL, 'Belum Memilih', 'Sudah Memilih') AS status
+//               FROM mahasiswa m
+//               LEFT JOIN pemilihan p ON m.username = p.username";
+
+//     // Tambahkan kondisi semester jika ada
+//     if ($semester !== null) {
+//         $query .= " WHERE m.semester = '$semester'";
+//     }
+
+//     // Tambahkan pengurutan berdasarkan semester dan nama
+//     $query .= " ORDER BY 
+//                     CASE 
+//                 WHEN m.kelas = 'Pusat/ Teknologi' THEN 1
+//                 WHEN m.kelas = 'A TI 01' THEN 2
+//                 WHEN m.kelas = 'A TI 02' THEN 3
+//                 WHEN m.kelas = 'B TI 01' THEN 4
+//                 WHEN m.kelas = 'Tasik' THEN 4
+//                     ELSE 5
+//                 END,
+//                     FIELD(m.semester, 1, 3, 5, 7), m.nama_lengkap ASC";
+
+//     $result = mysqli_query($conn, $query);
+
+//     if (!$result) {
+//         die("Error: " . mysqli_error($conn));
+//     }
+
+//     $sudahMemilih = [];
+//     $belumMemilih = [];
+
+//     while ($row = mysqli_fetch_assoc($result)) {
+//         if ($row['status'] === 'Sudah Memilih') {
+//             $sudahMemilih[] = $row;
+//         } else {
+//             $belumMemilih[] = $row;
+//         }
+//     }
+
+//     // Mengembalikan array yang berisi data sudah memilih dan belum memilih
+//     return [
+//         'sudahMemilih' => $sudahMemilih,
+//         'belumMemilih' => $belumMemilih
+//     ];
+// }
+
+function getPemilihan($semester = null, $limit = 10, $offset = 0, $search = null)
 {
     global $conn;
 
-    // Query untuk mendapatkan data mahasiswa beserta status pemilihannya
     $query = "SELECT m.nim, m.nama_lengkap, m.kelas, m.semester, 
-                     IF(p.username IS NULL, 'Belum Memilih', 'Sudah Memilih') AS status
+                      IF(p.username IS NULL, 'Belum Memilih', 'Sudah Memilih') AS status
               FROM mahasiswa m
               LEFT JOIN pemilihan p ON m.username = p.username";
 
-    // Tambahkan kondisi semester jika ada
+    $conditions = [];
+
     if ($semester !== null) {
-        $query .= " WHERE m.semester = '$semester'";
+        $conditions[] = "m.semester = '$semester'";
     }
 
-    // Tambahkan pengurutan berdasarkan semester dan nama
+    if ($search !== null) {
+        $search = mysqli_real_escape_string($conn, $search);
+        $conditions[] = "(m.nama_lengkap LIKE '%$search%' OR m.nim LIKE '%$search%')";
+    }
+
+    if (!empty($conditions)) {
+        $query .= " WHERE " . implode(" AND ", $conditions);
+    }
+
     $query .= " ORDER BY 
                     CASE 
-                WHEN m.kelas = 'Pusat/ Teknologi' THEN 1
-                WHEN m.kelas = 'A TI 01' THEN 2
-                WHEN m.kelas = 'A TI 02' THEN 3
-                WHEN m.kelas = 'B TI 01' THEN 4
+                WHEN m.kelas = 'A TI 01' THEN 1
+                WHEN m.kelas = 'A TI 02' THEN 2
+                WHEN m.kelas = 'B TI 01' THEN 3
                 WHEN m.kelas = 'Tasik' THEN 4
                     ELSE 5
                 END,
                     FIELD(m.semester, 1, 3, 5, 7), m.nama_lengkap ASC";
 
+    // Coba hapus LIMIT dan OFFSET untuk melihat apakah data muncul tanpa pagination
     $result = mysqli_query($conn, $query);
 
     if (!$result) {
@@ -363,12 +428,67 @@ function getStatusPemilihan($semester = null)
         }
     }
 
-    // Mengembalikan array yang berisi data sudah memilih dan belum memilih
     return [
         'sudahMemilih' => $sudahMemilih,
         'belumMemilih' => $belumMemilih
     ];
 }
+
+function getTotalPemilihan($semester = null)
+{
+    global $conn;
+
+    $query = "SELECT 
+                  SUM(CASE WHEN p.username IS NULL THEN 1 ELSE 0 END) AS belumMemilih,
+                  SUM(CASE WHEN p.username IS NOT NULL THEN 1 ELSE 0 END) AS sudahMemilih
+              FROM mahasiswa m
+              LEFT JOIN pemilihan p ON m.username = p.username";
+
+    if ($semester !== null) {
+        $query .= " WHERE m.semester = '$semester'";
+    }
+
+    $result = mysqli_query($conn, $query);
+
+    if (!$result) {
+        die("Error: " . mysqli_error($conn));
+    }
+
+    return mysqli_fetch_assoc($result);
+}
+
+function getTotalData($semester = null, $search = null)
+{
+    global $conn;
+
+    $query = "SELECT COUNT(*) AS total FROM mahasiswa";
+
+    $conditions = [];
+
+    if ($semester !== null) {
+        $conditions[] = "semester = '$semester'";
+    }
+
+    if ($search !== null) {
+        $search = mysqli_real_escape_string($conn, $search);
+        $conditions[] = "(nama_lengkap LIKE '%$search%' OR nim LIKE '%$search%')";
+    }
+
+    if (!empty($conditions)) {
+        $query .= " WHERE " . implode(" AND ", $conditions);
+    }
+
+    $result = mysqli_query($conn, $query);
+
+    if (!$result) {
+        die("Error: " . mysqli_error($conn));
+    }
+
+    $row = mysqli_fetch_assoc($result);
+
+    return $row['total'];
+}
+
 
 // Ambil data suara berdasarkan paslon
 function getSuaraPaslon()
@@ -456,4 +576,35 @@ function saveVote($username, $id_paslon, $semester)
     global $conn;
     $queryInsert = "INSERT INTO pemilihan VALUES ('', '$username', '$id_paslon', '$semester', NOW())";
     return mysqli_query($conn, $queryInsert);
+}
+
+// Function Search
+function search($keyword, $semesterAktif)
+{
+    global $conn;
+
+    // Filter pencarian hanya untuk semester aktif
+    $query = "SELECT * FROM mahasiswa WHERE semester = ? AND (
+                nim LIKE ? OR 
+                nama_lengkap LIKE ? OR 
+                kelas LIKE ?
+              )";
+
+    $stmt = mysqli_prepare($conn, $query);
+    $likeKeyword = "%$keyword%";
+    mysqli_stmt_bind_param($stmt, "isss", $semesterAktif, $likeKeyword, $likeKeyword, $likeKeyword);
+    mysqli_stmt_execute($stmt);
+
+    $result = mysqli_stmt_get_result($stmt);
+
+    if (!$result) {
+        die("Error: " . mysqli_error($conn));
+    }
+
+    $mahasiswa = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $mahasiswa[] = $row;
+    }
+
+    return $mahasiswa;
 }
